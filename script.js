@@ -1,3 +1,8 @@
+/*
+This project was based on a creation by other programmers 
+https://codepen.io/ju-az/pen/eYJQwLx/
+*/
+
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const img = new Image();
