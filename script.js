@@ -15,7 +15,7 @@ let gamePlaying = false;
 //estado de jogo. Se ta jogando e true
 const gravity = 0.35;
 //quao rapido ele chega ao chao
-const speed = 3.2;
+const speed = 2.6;
 //quao rapido os canos andam
 const size = [51, 36];
 //o primeiro elemento eh o with e o segundo eh height
@@ -47,18 +47,26 @@ const pipeGap = 270;
 const pipeLoc = () => (Math.random() * ((canvas.height - (pipeGap + pipeWidth)) - pipeWidth)) + pipeWidth;
 //esse aleatorio significa que a abertura do cano vai ser numa posicao aleatoria
 
+
 const setup = () => {
+//essa func serve pra definir as configurações do início de jogo, o score, a altura do pássaro, a situação dos três primeiros canos em formato de Array    
 currentScore = 0;
 //ja deixa pre definido a quantidade de canos que ele passou. no caso, zero
 flight = jump;
 // vai ser alguma coisa
 
 
-// set initial flyHeight (middle of screen - size of the bird)
+
 flyHeight = (canvas.height/ 2 ) - (size[1]/2 );
+//Altura do pássaro no inicio do Jogo. No caso, no meio da tela
+
 
 // setup first 3 pipes
 pipes = Array(3).fill().map((a, i) => [canvas.width + (i * (pipeGap + pipeWidth)), pipeLoc()]);
+//Aqui ele cria uma lista com três elementos 'undefined', ou seja, [und,und,und]. Esse undefined aparece por causa do fill sem argumento.
+//Depois ele utiliza o map com dois argumentos, sendo o segundo o index de cada elemento do Array.
+//No fim das contas, pipes armazenará uma lista de listas. Cada sublista Terá o um valor influenciado pelo index como primeiro elemento e um valor aleatório (referente ao pipeLoc())
+
 }
 
 const render = () => {
@@ -133,3 +141,4 @@ img.onload = render;
 // start game
 document.addEventListener('click', () => gamePlaying = true);
 window.onclick = () => flight = jump;
+
