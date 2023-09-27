@@ -121,16 +121,27 @@ flyHeight = Math.min(flyHeight + flight, canvas.height - size[1]);
 } else {
 ctx.drawImage(img, 432, Math.floor((index % 9) / 3) * size[1], ...size, ((canvas.width / 2) - size[0] / 2), flyHeight, ...size);
 flyHeight = (canvas.height / 2) - (size[1] / 2);
-// text accueil
-ctx.fillText(`Best score : ${bestScore}`, 85, 245);
-ctx.fillText('Click to play', 90, 535);
-ctx.font = "bold 30px courier";
-}
+    
+    // Visual da página inicial do jogo.
+    ctx.fillText(`Best score : ${bestScore}`, 85, 245);
+      //Preenche a tela, nesse caso, chamando função bestScore, registrada com o maior valor de canos ultrapassados.
+      //A melhor pontuação do jogo é registrada na posição 85px (horizontal) e 245px (vertical).
+    ctx.fillText('Click to play', 90, 535);
+      // Análogo ao Best Score.
+    ctx.font = "bold 30px arial";
+      // Altera a tipagem (forma, tamanho e fonte) da letra localizada no canvas.
+  }
 
-document.getElementById('bestScore').innerHTML = `Best : ${bestScore}`;
-document.getElementById('currentScore').innerHTML = `Current : ${currentScore}`;
+  document.getElementById('bestScore').innerHTML = `Best : ${bestScore}`;
+  // HTML + JS: A const render() altera o valor do bestScore, cada vez que o anterior é superado.
+  // Essa informação fica armazenada apenas durante a execução do jogo. Após reiniciado, seu valor volta a ser 0. 
+  document.getElementById('currentScore').innerHTML = `Current : ${currentScore}`;
+  // Em questão de estrutura de código, é análogo ao anterior recém-explicado. 
+  // Em questão de execução, é diferente devido a currentScore agir de outro modo, como é 'explicado' em:
+  //  ''if(pipe[0] <= -pipeWidth){ \n currentScore++''; Ou seja, o score atual se altera de forma mais dinâmica.
 
-// tell the browser to perform anim
+
+  // tell the browser to perform anim
 window.requestAnimationFrame(render);
 }
 
