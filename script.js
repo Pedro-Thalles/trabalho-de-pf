@@ -10,7 +10,6 @@ const img = new Image();
 //cria uma imagem no corpo da pagina
 img.src = "https://i.ibb.co/Q9yv5Jk/flappy-bird-set.png";
 //no fim das contas, ele cria um objeto imagem e coloca o link dos canos
-
 let gamePlaying = false;
 //estado de jogo. Se ta jogando e true
 const gravity = 0.35;
@@ -72,11 +71,22 @@ pipes = Array(3).fill().map((a, i) => [canvas.width + (i * (pipeGap + pipeWidth)
 const render = () => {
 // make the pipe and bird moving 
 index++;
-
+//esse ++ significa que 'index' armazena 0 + 1, ou seja, 'index' deixa de ser 0 e passa a ser 1
+//cada vez que o '++' for aplicado, index se transforma em 'index' + 1
 // ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 // background first part 
 ctx.drawImage(img, 0, 0, canvas.width, canvas.height, -((index * (speed / 2)) % canvas.width) + canvas.width, 0, canvas.width, canvas.height);
+/*O drawImage tem 9 argumentos base. O primeiro justamente a imagem que vai ser 'desenhada na tela'. O segundo e o terceiro são as coordenadas x e y, partindo da parede esquerda e do teto, respectivamente, de onde começará um recorte da imagem original
+O quarto e o quinto é a largura e a altura do seu recorte, partindo do ponto x,y, mencionado na linha anterior. Pronto, até aí vc recortou um pedaço da imagem original.
+Os próximos argumentos indicaram onde a nova imagem será colocada na tela. O sexto e o sétimo são as coordenadas x e y (mesmo esquema da linha 80) de um ponto de referência. Por fim, os argumentos 8 e 9 será, respectivamente, a altura e a largura novas do recorte que vc fez
+Para uma explicação mais visual, veja as fotos desse artigo : https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
+
+No fim das contas, essa função serve para designar a primeira posição do background
+perceba que o segundo e o terceiro argumento são zero, então o ponto de referência é o extremo superior esquerdo
+o width e o height do canvas são os mesmos do tamanho da imagem de pixel do jogo
+
+*/
 // background second part
 ctx.drawImage(img, 0, 0, canvas.width, canvas.height, -(index * (speed / 2)) % canvas.width, 0, canvas.width, canvas.height);
 
