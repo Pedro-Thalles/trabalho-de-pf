@@ -172,15 +172,23 @@ flyHeight = (canvas.height / 2) - (size[1] / 2);
 
   // tell the browser to perform anim
 window.requestAnimationFrame(render);
+// atualiza a interface do usuário com as informações atualizadas da const render()
+
 }
 
 // launch setup
 setup();
+//inicializa a função setup()
 img.onload = render;
+// inicializa somente a função render assim que a imagem img estiver completamente carregada 
 
 // start game
 document.addEventListener('click', () => gamePlaying = true);
+// define evento de click na tela do usuário, que quando ocorrer, definirá a variável gamePlaying como true
 window.onclick = () => flight = jump;
+// quando o click ocorrer, a função anônima () => flight = jump será executada
+
+
 
 // (Comentário de linkamento repositório à máquina) Consegui!! 
 //teste
