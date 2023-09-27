@@ -33,9 +33,9 @@ flight,
 flyHeight, 
 //vai ter um papel
 currentScore, 
-//vai ter um papel
+//elemento de uma condição da função pipes.map() em render(). Ele mostra o score atual do momento de jogo
 pipe;
-//vai ter um papel
+//argumento de uma função map, que vai trabalhar com cada elemento da lista pipes
 
 
 // pipe settings
@@ -87,39 +87,58 @@ perceba que o segundo e o terceiro argumento são zero, então o ponto de refer�
 o width e o height do canvas são os mesmos do tamanho da imagem de pixel do jogo
 
 */
-// background second part
+// background second part//
 ctx.drawImage(img, 0, 0, canvas.width, canvas.height, -(index * (speed / 2)) % canvas.width, 0, canvas.width, canvas.height);
+//aqui eu percebi que esses dois últimos drawImage juntos formam a imagem de fundo do jogo, porém estática.
+//o primeiro drawImage é uma fatia bem pequena que fica na direita. O segundo forma o resto da imagem na esquerda
+//quanto maior o speed, maior será a menor fatia
 
 // pipe display
 if (gamePlaying){
 pipes.map(pipe => {
 // pipe moving
 pipe[0] -= speed;
-
+//pipe[0] se transforma em pipe[0] - speed 
 // top pipe
 ctx.drawImage(img, 432, 588 - pipe[1], pipeWidth, pipe[1], pipe[0], 0, pipeWidth, pipe[1]);
+// a função desse pipe[1] é justamente a aleatoriedade da distância da cabeça do cano de cima ao teto do canvas
+//o segundo argumento é 432 (maior que o background da cidade) porque na fotinha (img) a partir do x==423 pixels vem os canos
+//ele coloca nesse caso o pipeWidth (78px) justamente pq a largura dos canos em img é 78px
+//tudo isso, como indicado pelo criador original do projeto, é a configuração do cano de cima
+
 // bottom pipe
 ctx.drawImage(img, 432 + pipeWidth, 108, pipeWidth, canvas.height - pipe[1] + pipeGap, pipe[0], pipe[1] + pipeGap, pipeWidth, canvas.height - pipe[1] + pipeGap);
+//o segundo argumento é 432+78 pra conseguir o segundo cano de img
+//o terceiro é 108 pq, em img, na parte dos canos, a distância do teto até chegar na cabeça do último cano é de 108px
+//mas, no geral, a lógica é semelhante à do último draw.Image
 
 // give 1 point & create new pipe
 if(pipe[0] <= -pipeWidth){
+  //aqui eu acho que está implementado desse jeito pq quando o pássaro passar pelo cano o index da situação na lista pipes vai ser -1
+  //aí quando for menos 1 será 
 currentScore++;
 // check if it's the best score
 bestScore = Math.max(bestScore, currentScore);
 
 // remove & create new pipe
 pipes = [...pipes.slice(1), [pipes[pipes.length-1][0] + pipeGap + pipeWidth, pipeLoc()]];
-console.log(pipes);
+//isso é tipo uma recursividade. Ele vai modificar uma cópia da lista pipes. O primeiro e segundo elemento são o seg e o terc do pipes original
+//o terceiro elemento desse novo pipes será uma lista, cujo primeiro elemento é o primeiro elemento da segunda lista do pipes original acrescido de pipeGap + pipeWidth, e cujo segundo elemento é o pipeLoc()
+//ou seja: (referente à linha 99) [[779,A],[1127,A],[779+270+78,A]]
 }
 
-// if hit the pipe, end
+ //if hit the pipe, end
 if ([
-pipe[0] <= cTenth + size[0], 
+pipe[0] <= cTenth + size[0],
+//ou seja, se o passaro bater de frente com o cano 
 pipe[0] + pipeWidth >= cTenth, 
 pipe[1] > flyHeight || pipe[1] + pipeGap < flyHeight + size[1]
+//se o passaro cair na cabeça do cano
 ].every(elem => elem)) {
+  //aqui acredito que é no sentido de: if(lista== true){} por que o every vai retornar true
 gamePlaying = false;
 setup();
+//reinício do jogo
 }
 })
 }
