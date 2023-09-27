@@ -154,7 +154,11 @@ flight += gravity;
 //isso atualiza a altura verticcal do passaro
 flyHeight = Math.min(flyHeight + flight, canvas.height - size[1]);
 } else {
+// se o jogo não estiver em andamento, o passaro também é desenhado na tela atrabés da função ctx.drawimage, entretanto, dessa vez//
+// ele é desenhado centralizado na tela, o que é passado através das coordenadas canvas.width/2 - size[0]/2 e flyHeight, com o tamanho 
+// especificado por ...size
 ctx.drawImage(img, 432, Math.floor((index % 9) / 3) * size[1], ...size, ((canvas.width / 2) - size[0] / 2), flyHeight, ...size);
+// aqui a altura do passaro é definida para que ele fique no meio da tela
 flyHeight = (canvas.height / 2) - (size[1] / 2);
     
     // Visual da página inicial do jogo.
