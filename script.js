@@ -143,9 +143,15 @@ setup();
 })
 }
 // draw bird
+
+// o if(gamePlaying) verifica se o jogo está em andamento através da variável gamePlaying. se estiver, 
 if (gamePlaying) {
+//é desenhado na tela o passaro através do comando ctx.drawImage no contexto 2d nas posição (cTenth, flyHeight) com um tamanho "size"
 ctx.drawImage(img, 432, Math.floor((index % 9) / 3) * size[1], ...size, cTenth, flyHeight, ...size);
+//isso atualiza os valores da variavel flight que controla o movimento para cima do passaro, sendo incrementado com a gravidade que é negativa
+// o que faz o passaro ficar com o efeito de cair no chão
 flight += gravity;
+//isso atualiza a altura verticcal do passaro
 flyHeight = Math.min(flyHeight + flight, canvas.height - size[1]);
 } else {
 ctx.drawImage(img, 432, Math.floor((index % 9) / 3) * size[1], ...size, ((canvas.width / 2) - size[0] / 2), flyHeight, ...size);
