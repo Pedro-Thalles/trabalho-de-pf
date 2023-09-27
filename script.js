@@ -10,7 +10,7 @@ const img = new Image();
 //cria uma imagem no corpo da pagina
 img.src = "https://i.ibb.co/Q9yv5Jk/flappy-bird-set.png";
 //no fim das contas, ele cria um objeto imagem e coloca o link dos canos
-
+//teste
 let gamePlaying = false;
 //estado de jogo. Se ta jogando e true
 const gravity = 0.35;
