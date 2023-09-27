@@ -153,3 +153,4 @@ img.onload = render;
 document.addEventListener('click', () => gamePlaying = true);
 window.onclick = () => flight = jump;
 
+// (Comentário de linkamento repositório à máquina) Consegui!! 
