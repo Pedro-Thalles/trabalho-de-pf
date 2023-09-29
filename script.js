@@ -43,7 +43,8 @@ const pipeWidth = 78;
 //largura do cano. como nao existe um cano de 156 px ele usa o que ele ja tem.
 const pipeGap = 270;
 //largura tanto entre a cabeca dos canos quanto entre a dupla de canos
-const pipeLoc = () => (Math.random() * ((canvas.height - (pipeGap + pipeWidth)) - pipeWidth)) + pipeWidth;
+const pipeLoc = () => (Math.random() * (canvas.height - pipeGap -2*pipeWidth)) +pipeWidth;
+//                                        random * (342) + 78
 //esse aleatorio significa que a abertura do cano vai ser numa posicao aleatoria
 
 
@@ -54,14 +55,15 @@ currentScore = 0;
 flight = jump;
 // vai ser alguma coisa
 
-
+// [[431, pipeLoc()],[843, pipeLoc()],[1122,pipeLoc()]]
 
 flyHeight = (canvas.height/ 2 ) - (size[1]/2 );
 //Altura do pássaro no inicio do Jogo. No caso, no meio da tela
 
-
+//lista.map((x,y)=>x)
 // setup first 3 pipes
-pipes = Array(3).fill().map((a, i) => [canvas.width + (i * (pipeGap + pipeWidth)), pipeLoc()]);
+pipes = Array(3).fill().map((a, i) => [canvas.width + (i * (pipeGap + pipeWidth)), pipeLoc()]); // Função não compreendida 
+
 //Aqui ele cria uma lista com três elementos 'undefined', ou seja, [und,und,und]. Esse undefined aparece por causa do fill sem argumento.
 //Depois ele utiliza o map com dois argumentos, sendo o segundo o index de cada elemento do Array.
 //No fim das contas, pipes armazenará uma lista de listas. Cada sublista Terá o um valor influenciado pelo index como primeiro elemento e um valor aleatório (referente ao pipeLoc())
@@ -70,13 +72,14 @@ pipes = Array(3).fill().map((a, i) => [canvas.width + (i * (pipeGap + pipeWidth)
 
 const render = () => {
 // make the pipe and bird moving 
-index++;
+index++; // não compreendido
+
 //esse ++ significa que 'index' armazena 0 + 1, ou seja, 'index' deixa de ser 0 e passa a ser 1
 //cada vez que o '++' for aplicado, index se transforma em 'index' + 1
 // ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 // background first part 
-ctx.drawImage(img, 0, 0, canvas.width, canvas.height, -((index * (speed / 2)) % canvas.width) + canvas.width, 0, canvas.width, canvas.height);
+ctx.drawImage(img, 0, 0, canvas.width, canvas.height, -((index * (speed / 2)) % canvas.width) + canvas.width, 0, canvas.width, canvas.height); // não compreendido
 /*O drawImage tem 9 argumentos base. O primeiro justamente a imagem que vai ser 'desenhada na tela'. O segundo e o terceiro são as coordenadas x e y, partindo da parede esquerda e do teto, respectivamente, de onde começará um recorte da imagem original
 O quarto e o quinto é a largura e a altura do seu recorte, partindo do ponto x,y, mencionado na linha anterior. Pronto, até aí vc recortou um pedaço da imagem original.
 Os próximos argumentos indicaram onde a nova imagem será colocada na tela. O sexto e o sétimo são as coordenadas x e y (mesmo esquema da linha 80) de um ponto de referência. Por fim, os argumentos 8 e 9 será, respectivamente, a altura e a largura novas do recorte que vc fez
@@ -88,37 +91,37 @@ o width e o height do canvas são os mesmos do tamanho da imagem de pixel do jog
 
 */
 // background second part//
-ctx.drawImage(img, 0, 0, canvas.width, canvas.height, -(index * (speed / 2)) % canvas.width, 0, canvas.width, canvas.height);
+ctx.drawImage(img, 0, 0, canvas.width, canvas.height, -(index * (speed / 2)) % canvas.width, 0, canvas.width, canvas.height); // não compreendido
 //aqui eu percebi que esses dois últimos drawImage juntos formam a imagem de fundo do jogo, porém estática.
 //o primeiro drawImage é uma fatia bem pequena que fica na direita. O segundo forma o resto da imagem na esquerda
 //quanto maior o speed, maior será a menor fatia
 
 // pipe display
 if (gamePlaying){
-pipes.map(pipe => {
+pipes.map(pipe => { // não compreendido. Por que não tem 'return'?
 // pipe moving
-pipe[0] -= speed;
+pipe[0] -= speed; // não compreendido. 
 //pipe[0] se transforma em pipe[0] - speed 
 // top pipe
-ctx.drawImage(img, 432, 588 - pipe[1], pipeWidth, pipe[1], pipe[0], 0, pipeWidth, pipe[1]);
+ctx.drawImage(img, 432, 588 - pipe[1], pipeWidth, pipe[1], pipe[0], 0, pipeWidth, pipe[1]); // não compreendido
 // a função desse pipe[1] é justamente a aleatoriedade da distância da cabeça do cano de cima ao teto do canvas
 //o segundo argumento é 432 (maior que o background da cidade) porque na fotinha (img) a partir do x==423 pixels vem os canos
 //ele coloca nesse caso o pipeWidth (78px) justamente pq a largura dos canos em img é 78px
 //tudo isso, como indicado pelo criador original do projeto, é a configuração do cano de cima
 
 // bottom pipe
-ctx.drawImage(img, 432 + pipeWidth, 108, pipeWidth, canvas.height - pipe[1] + pipeGap, pipe[0], pipe[1] + pipeGap, pipeWidth, canvas.height - pipe[1] + pipeGap);
+ctx.drawImage(img, 432 + pipeWidth, 108, pipeWidth, canvas.height - pipe[1] + pipeGap, pipe[0], pipe[1] + pipeGap, pipeWidth, canvas.height - pipe[1] + pipeGap); // não compreendido
 //o segundo argumento é 432+78 pra conseguir o segundo cano de img
 //o terceiro é 108 pq, em img, na parte dos canos, a distância do teto até chegar na cabeça do último cano é de 108px
 //mas, no geral, a lógica é semelhante à do último draw.Image
 
 // give 1 point & create new pipe
-if(pipe[0] <= -pipeWidth){
+if(pipe[0] <= -pipeWidth){ //não compreendido
   //aqui eu acho que está implementado desse jeito pq quando o pássaro passar pelo cano o index da situação na lista pipes vai ser -1
   //aí quando for menos 1 será 
-currentScore++;
+currentScore++; 
 // check if it's the best score
-bestScore = Math.max(bestScore, currentScore);
+bestScore = Math.max(bestScore, currentScore); 
 
 // remove & create new pipe
 pipes = [...pipes.slice(1), [pipes[pipes.length-1][0] + pipeGap + pipeWidth, pipeLoc()]];
@@ -128,13 +131,13 @@ pipes = [...pipes.slice(1), [pipes[pipes.length-1][0] + pipeGap + pipeWidth, pip
 }
 
  //if hit the pipe, end
-if ([
+if ([ 
 pipe[0] <= cTenth + size[0],
 //ou seja, se o passaro bater de frente com o cano 
 pipe[0] + pipeWidth >= cTenth, 
 pipe[1] > flyHeight || pipe[1] + pipeGap < flyHeight + size[1]
 //se o passaro cair na cabeça do cano
-].every(elem => elem)) {
+].every(elem => elem)) { //não compreendida
   //aqui acredito que é no sentido de: if(lista== true){} por que o every vai retornar true
 gamePlaying = false;
 setup();
