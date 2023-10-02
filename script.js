@@ -1,3 +1,9 @@
+/*
+Esse projeto foi baseado na criação de outros desenvolvedores
+https://github.com/omariosouto/flappy-bird-devsoutinho/blob/master/jogo.js
+https://www.youtube.com/playlist?list=PLTcmLKdIkOWmeNferJ292VYKBXydGeDej
+*/
+
 const sprites = new Image()
 sprites.src = './sprites.png'
 
