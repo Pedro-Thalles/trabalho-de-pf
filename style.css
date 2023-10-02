@@ -21,3 +21,19 @@
           padding: 8px 6px;
           background: #5EE270;
         }
+
+/*
+possível nova folha de estilo
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  canvas {
+    border: 1px solid #000;
+    display: block;
+    margin: 0 auto;
+  }
+*/
