@@ -40,7 +40,10 @@ const planoDeFundo = {
             planoDeFundo.spriteX, planoDeFundo.spriteY,
             planoDeFundo.largura, planoDeFundo.altura,
             planoDeFundo.x, planoDeFundo.y,
-            planoDeFunawImage(
+            planoDeFundo.largura, planoDeFundo.altura
+        )
+
+        contexto.drawImage(
             sprites,
             planoDeFundo.spriteX, planoDeFundo.spriteY,
             planoDeFundo.largura, planoDeFundo.altura,
