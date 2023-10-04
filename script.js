@@ -6,6 +6,8 @@ https://www.youtube.com/playlist?list=PLTcmLKdIkOWmeNferJ292VYKBXydGeDej
 let frames = 0;
 const som_HIT = new Audio();
 som_HIT.src = `./efeitos/hit.wav`
+const som_PULO = new Audio()
+som_PULO.src = `./efeitos/pulo.wav`
 const sprites = new Image()//Cria um espaço de imagem
 sprites.src = './sprites.png'//Adiciona a imagem 'sprites.png a esse espaço'
 const canvas = document.querySelector('canvas')//seleciona o objeto html 'canvas'
@@ -65,9 +67,6 @@ const chao = {//registro para o chão do cenário
         const MovimentoDoChao = 1;
         const RepeteEm = chao.largura/2;
         const movimentacao = chao.x - MovimentoDoChao;
-        console.log(`chao.x`,chao.x);
-        console.log(`RepeteEm`,RepeteEm);
-        console.log(`movimentacao`,movimentacao % RepeteEm)
         chao.x=movimentacao % RepeteEm;
      },
      desenha(){
@@ -117,9 +116,9 @@ const passaro = {
      atualiza(){//função para atualizar a posição do pássaro no fps determinado pela requestAnimationFrame fazendo o pássaro cair realisticamente
     if (fazColisao(passaro,globais.chao)){
                    console.log(`fez colisão`)
-                   som_HIT.play();
-                   setTimeout(() =>< {
-
+                   
+                   setTimeout(() => {
+                        som_HIT.play();
                    },1000 );
                    mudaParaTela(telas.inicio);
                    return;
@@ -145,7 +144,6 @@ const passaro = {
             passaro.FrameAtual = incremento % BaseRepeticao;
             }
         },
-     },
      desenha(){
          passaro.AtualizaoFrameAtual();
             const {spriteX,spriteY} = passaro.movimentos[passaro.FrameAtual];
@@ -157,7 +155,7 @@ const passaro = {
                passaro.largura,passaro.altura
         )
      }//mesmo raciocínio da linha 25
-}
+    }
     return passaro;
 }
 const globais = {};
@@ -165,7 +163,7 @@ let telaAtiva = {}// variável, pois como a tela ativa vai variar não têm como
 const mudaParaTela = (novaTela) =>{
     telaAtiva = novaTela
     if (telaAtiva.inicializa){
-        inicializa();
+        telaAtiva.inicializa();
     }
 }   // função que transforma o registro vazio (ou com o registro de uma tela específica) telaAtiva no registro da tela desejada
 const telas = {
@@ -177,7 +175,7 @@ const telas = {
         desenha(){
             planoDeFundo.desenha()
             globais.chao.desenha()
-            passaro.desenha()
+            globais.passaro.desenha()
             mensagemGetReady.desenha()
         },// na tela do início, será desenhado o plano de fundo do céu azul e prediozinhos, o chão, o pássaro e a mensagem de GetReady
         click(){
@@ -195,11 +193,13 @@ const telas = {
         },
          //mesmo raciocínio da linha 111, mas sem a mensagem de GetReady, já que o jogo já começou
          click () {
-            globais.passaro.pula
+            globais.passaro.pula()
+            som_PULO.play()
          },
          //atualiza o pássaro ao clicar na tela
         atualiza(){
-            globais.passaro.atualiza()// na tela de jogo o pássaro vai ficar se movimentando, caindo
+            globais.passaro.atualiza()
+            globais.chao.atualiza()// na tela de jogo o pássaro vai ficar se movimentando, caindo
         }
     }
 }
