@@ -38,14 +38,14 @@ const mensagemGetReady = {//registro para a mensagem de GetReady da tela inicial
 }
 
 
-const mensagemGameOver = {
-    sX: 134,
-    sY: 153,
-    w: 226,
-    h: 200,
-    x: (canvas.width / 2) - 226 / 2,
-    y: 50,
-    desenha() {
+const mensagemGameOver = {// Registro da mensagem Game Over
+    sX: 134, // coordenada do  ponto superior esquerdo da imagem que será recortado na imagem sprites.png
+    sY: 153, // mesma coisa para o a coordenada Y
+    w: 226,// largura do corte
+    h: 200,// altura do corte
+    x: (canvas.width / 2) - 226 / 2,// coordenada x para o ponto que será encaixado o recorte no canvas
+    y: 50,// o mesmo para o y
+    desenha() {// função que desenha utilizando o drawImage com os atributos anteriores
       contexto.drawImage(
         sprites,
         mensagemGameOver.sX, mensagemGameOver.sY,
