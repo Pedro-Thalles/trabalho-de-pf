@@ -36,6 +36,27 @@ const mensagemGetReady = {//registro para a mensagem de GetReady da tela inicial
         )
 }// função que contem o draw.Image referenciando os outros elementos do registro mensagemGetReady
 }
+
+
+const mensagemGameOver = {
+    sX: 134,
+    sY: 153,
+    w: 226,
+    h: 200,
+    x: (canvas.width / 2) - 226 / 2,
+    y: 50,
+    desenha() {
+      contexto.drawImage(
+        sprites,
+        mensagemGameOver.sX, mensagemGameOver.sY,
+        mensagemGameOver.w, mensagemGameOver.h,
+        mensagemGameOver.x, mensagemGameOver.y,
+        mensagemGameOver.w, mensagemGameOver.h
+      );
+    }
+  }
+
+  
 const planoDeFundo = {//registro para o plano de fundo dos prediozinhos  
     spriteX : 390,
      spriteY: 0,
@@ -124,9 +145,9 @@ const passaro = {
     if (fazColisao(passaro,globais.chao)){
        // console.log(`fez colisão`)
         som_HIT.play();       
-                setTimeout(() => {
-                    mudaParaTela(telas.inicio);
-                }, 500);
+                
+                    mudaParaTela(telas.gameOver);
+                
     return;
            }
            passaro.velocidade = passaro.velocidade + passaro.gravidade//A cada atualização de quadros a velocidade é somada com a gravidade
@@ -228,8 +249,9 @@ function criacanos(){
             const pedopássaro = globais.passaro.y + globais.passaro.altura
 
             // I: O começo dessa condição (primeira linha) NÃO GARANTE que o pássaro colidiu com o cano, mas sim que nesse momento, ele...
-            // I: ...verifica se o pássaro est;a na merma coordenada x do cano. Se, sim há dois casos:
-            if(globais.passaro.x >= par.x) {
+            // I: ...verifica se o pássaro está na merma coordenada x do cano. soma-se à largura do passaro para verificar
+            // se o bico dele que e está em contato com o cano. Se, sim há dois casos:
+            if((globais.passaro.x + globais.passaro.largura) >= par.x) {
             
             // I: Se a cabeça do pássaro possui a mesma coordenada do cano no céu na coord Y.    
             if(cabecadopássaro <= par.canoCeu.y){
@@ -267,10 +289,11 @@ function criacanos(){
             // I: ...sairão da largura do canvas (deireita) até a esquerda da tela.
             canos.pares.forEach(function(par){
                 par.x -= 2
-                //I: Aplica reinício do jogo caso a colisão com os canos seja verdadeira.
+                //I: Vai para a tela de game over e toca o som caso a colisão com os canos seja verdadeira.
                 if (canos.temcontatopassaro(par)) {
                     console.log('Você perdeu!')
-                    mudaParaTela(telas.inicio)
+                    som_HIT.play();
+                    mudaParaTela(telas.gameOver);
                 }
                 //I: Aqui é o seguinte. shift() é uma função que remove o elemento primeiro de uma lista e o retorna como um elemento vazio...
                 //I: ..., isso é muito importante pra remover os canos que passaram pelo pássaro, fazendo com que novos apareçam sem afetar a memória.
@@ -296,6 +319,33 @@ const mudaParaTela = (novaTela) =>{
     }
 }   // função que transforma o registro vazio (ou com o registro de uma tela específica) telaAtiva no registro da tela desejada
 
+
+//função de criar o placar do jogo que marcará a pontuação do jogador
+const criaPlacar = () =>{
+    // registro placar, que conta com os atributos pontuacao, que será uma variavel que ficará se modificando marcando os pontos
+    const placar = {
+        pontuacao: 0,
+        // atributo atualiza serve para ir atualizando o valor do placar de acordo com a quantidade de framas que é passado na tela
+        atualiza() {
+            //intervalo de frames de serve para incrementar o valor 1 à pontuação a cada quantidade de frames divisivel por 10
+            //serve para contar os pontos de uma maneira mais lenta
+            const  intervaloDeFrames = 10;
+            const passouIntervalo = frames % intervaloDeFrames === 0;
+            if(passouIntervalo){          
+              placar.pontuacao = placar.pontuacao + 1;
+            }
+        },
+        
+        //atributo desenha serve para desenhar o frame na tela
+        desenha(){
+            contexto.font = '35px VT323';
+            contexto.textAlign = 'right';
+            contexto.fillStyle = 'white';
+            contexto.fillText(`${placar.pontuacao}`, canvas.width - 10, 35);
+        }
+    }
+    return placar;
+}
 const telas = {
     inicio:{
         inicializa(){
@@ -317,11 +367,15 @@ const telas = {
         } // no momento, não há nada para ficar movimentando na tela inicial do jogo
     },
     jogo:{
+        inicializa(){
+            globais.placar = criaPlacar();
+        },
         desenha(){
             planoDeFundo.desenha();
             globais.canos.desenha();
             globais.chao.desenha();
             globais.passaro.desenha();
+            globais.placar.desenha();
         },
          //mesmo raciocínio da linha 111, mas sem a mensagem de GetReady, já que o jogo já começou
          click () {
@@ -333,6 +387,22 @@ const telas = {
             globais.canos.atualiza();
             globais.chao.atualiza();
             globais.passaro.atualiza(); // na tela de jogo o pássaro vai ficar se movimentando, caindo
+            globais.placar.atualiza();
+        }
+    },
+    //tela.gameOver serve para trazer o desenho gameOver para a tela do jogo conforme a função for chamado
+    gameOver:{
+        // desenha a tela
+        desenha(){
+            mensagemGameOver.desenha();
+        },
+        atualiza(){
+
+        },
+        //quando estiver na tela de game over e ocorre um click, voltará para o começo do jogo
+        click(){
+            mudaParaTela(telas.inicio);
+
         }
     }
 }
