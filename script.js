@@ -119,7 +119,7 @@ const passaro = {
                passaro.velocidade = -passaro.pulo;
         },//faz o vôo do pássaro ocorrer, ao relacionar o salto e a velocidade de forma inversa
      velocidade: 0,//velocidade inicial sendo zero, pois antes de o jogo começar o pássaro fica parado
-     gravidade: 0.12,//gravidade que se tornou mais realista até o momento
+     gravidade: 0.25,//gravidade que se tornou mais realista até o momento
      atualiza(){//função para atualizar a posição do pássaro no fps determinado pela requestAnimationFrame fazendo o pássaro cair realisticamente
     if (fazColisao(passaro,globais.chao)){
        // console.log(`fez colisão`)
@@ -166,6 +166,125 @@ const passaro = {
     return passaro;
 }
 
+// I: Criando a função para gerar os canos na tela do jogador.
+
+function criacanos(){
+    const canos = {      // I: Segue a mesma lógica. Cada atributo antes de desenha() é um valor específico para o drawImage()....
+         largura: 52,   // I: .... que resultrará na construção dos canos na tela. Repare que coloquei spritesX e Y diferentes...            //
+         altura: 400,  // I: ... para os canos de cima e de baixo.
+         canochao: {
+            spriteX: 0,
+            spriteY: 169,
+         },
+         canoceu: {
+            spriteX: 52,
+            spriteY: 169,
+         },
+         espaco: 200,
+         desenha(){
+            canos.pares.forEach(function(par){ // I: Eu sei que forEach quebra o paradigma. Basicamente ele vai alterar a lista original...
+            const yAleatorio = par.y           // I: ...pares[] e pra cada elemento vai atribuir esses valores específicos.
+            const espacamentoentrecanos = 90
+    
+            const canoCeuX = par.x       // I: Note que as coord (x,y) do Cano céu são dinâmicas. y é alterado a um valor aleatório...
+            const canoCeuY = yAleatorio // I: ...equanto x utilizará o que está linhas de código abaixo: o canvas.width.
+            // I: Desenhando os canos de cima.
+            contexto.drawImage(
+                sprites,
+                canos.canoceu.spriteX, canos.canoceu.spriteY,
+                canos.largura, canos.altura,
+                canoCeuX, canoCeuY,
+                canos.largura, canos.altura
+            )   
+            // I: Desenhando os canos do chão.
+            const canoChaoX = par.x
+            const canoChaoY = 400 + espacamentoentrecanos + yAleatorio
+            contexto.drawImage(
+                sprites,
+                canos.canochao.spriteX, canos.canochao.spriteY,
+                canos.largura, canos.altura,
+                canoChaoX, canoChaoY,
+                canos.largura, canos.altura
+             ) 
+
+            // I: Parece até meio redundante, mas essas coordenadas par(.canoCeu e .canoChao) serão melhor identificadas na hora de aplicar a colisão. 
+            par.canoCeu = {
+                x: canoCeuX,
+                y: canoCeuY + canos.altura 
+            },
+
+            par.canoChao = {
+                x: canoChaoX,
+                y: canoChaoY
+            }
+
+          })
+        },
+        
+        // I: A função de colisão. Ela cria um pré-requisito que utiliza as coord. do objeto pássaro e verifica se em determinado...
+        // I: ...quadro essas coordenadas são ao menos as mesmas. Se sim, uma possível colisão foi detectada.
+        temcontatopassaro(par){
+            const cabecadopássaro = globais.passaro.y
+            const pedopássaro = globais.passaro.y + globais.passaro.altura
+
+            // I: O começo dessa condição (primeira linha) NÃO GARANTE que o pássaro colidiu com o cano, mas sim que nesse momento, ele...
+            // I: ...verifica se o pássaro est;a na merma coordenada x do cano. Se, sim há dois casos:
+            if(globais.passaro.x >= par.x) {
+            
+            // I: Se a cabeça do pássaro possui a mesma coordenada do cano no céu na coord Y.    
+            if(cabecadopássaro <= par.canoCeu.y){
+                return true
+            }
+            
+            // I: Se a parte de baixo ('pé') enconstou em algum momento na coord y do cano do chão.
+            if(pedopássaro >= par.canoChao.y){
+                return true
+                
+            }
+        }
+        // I: E aqui é quando caso o pássaro não tenha a mesma coordenada x dos canos, o que não necessita verificar a coord y.
+            return false;
+        },
+
+        // I: Pares [] é uma lista vazia. É um atributo que foi retornado códigos acima pra aplicar a function par.
+         pares: [],
+         // I: Atualiza segue a mesma logística dos demais, mas há outros detalhes interessantes.
+         atualiza(){
+            // I: Mais embaixo você verá que em loop() frames tem seu valor somado 1 a cada quadro. 
+            // I: Com base nisso, foi feito uma lógica de que cada só será criado a cada 100 frames.
+            const passou100frames = frames % 100 === 0
+            if (passou100frames) {
+                // console.log('Acabou de passar 100 frames.')
+                
+                // I: Sim, .push() também não é funcional. Ele aplica novos(elementos)/novas(características) ao array:
+                canos.pares.push({
+                    // I: aqui modifica mais uma vez a coord x e y dos canos.
+                    x: canvas.width,
+                    y: -150 * (Math.random() + 1)
+                 })
+            }
+            // I: Aqui os canos pela sem sua coord x alterada para que se movimentem a cada valor -2 a x. O que significa que os canos...
+            // I: ...sairão da largura do canvas (deireita) até a esquerda da tela.
+            canos.pares.forEach(function(par){
+                par.x -= 2
+                //I: Aplica reinício do jogo caso a colisão com os canos seja verdadeira.
+                if (canos.temcontatopassaro(par)) {
+                    console.log('Você perdeu!')
+                    mudaParaTela(telas.inicio)
+                }
+                //I: Aqui é o seguinte. shift() é uma função que remove o elemento primeiro de uma lista e o retorna como um elemento vazio...
+                //I: ..., isso é muito importante pra remover os canos que passaram pelo pássaro, fazendo com que novos apareçam sem afetar a memória.
+                //I: Apesar de quebrar o paradigma, esse aqui vai precisar de mais atenção se precisar otimizar os canos de outra forma.
+                if (par.x + canos.largura <= 0) {
+                    canos.pares.shift()
+                }
+            })
+
+         }
+    }
+    return canos // I: Finalmente, deixa canos preparado pra essa alterações.
+}
+
 const globais = {};
 
 let telaAtiva = {}// variável, pois como a tela ativa vai variar não têm como ser um valor constante
@@ -181,35 +300,39 @@ const telas = {
     inicio:{
         inicializa(){
            globais.passaro = criapassaro();
+           globais.canos = criacanos();
            globais.chao = criachao();
         },
         desenha(){
-            planoDeFundo.desenha()
-            globais.chao.desenha()
-            globais.passaro.desenha()
-            mensagemGetReady.desenha()
+            planoDeFundo.desenha();
+            globais.passaro.desenha();
+            globais.chao.desenha();
+            mensagemGetReady.desenha();
         },// na tela do início, será desenhado o plano de fundo do céu azul e prediozinhos, o chão, o pássaro e a mensagem de GetReady
         click(){
-            mudaParaTela(telas.jogo) // com o evento do click do mouse, será disparada a função mudaParaTela com o argumento telas.jogo, ou seja, vai trocar da tela de início para tela de Jogo 
+            mudaParaTela(telas.jogo); // com o evento do click do mouse, será disparada a função mudaParaTela com o argumento telas.jogo, ou seja, vai trocar da tela de início para tela de Jogo 
         },
         atualiza(){
-            globais.chao.atualiza()
+            globais.chao.atualiza();
         } // no momento, não há nada para ficar movimentando na tela inicial do jogo
     },
     jogo:{
         desenha(){
-            planoDeFundo.desenha()
-            globais.chao.desenha()
-            globais.passaro.desenha()
+            planoDeFundo.desenha();
+            globais.canos.desenha();
+            globais.chao.desenha();
+            globais.passaro.desenha();
         },
          //mesmo raciocínio da linha 111, mas sem a mensagem de GetReady, já que o jogo já começou
          click () {
-            globais.passaro.pula()
+            globais.passaro.pula();
             //som_PULO.play()
          },
          //atualiza o pássaro ao clicar na tela
         atualiza(){
-            globais.passaro.atualiza() // na tela de jogo o pássaro vai ficar se movimentando, caindo
+            globais.canos.atualiza();
+            globais.chao.atualiza();
+            globais.passaro.atualiza(); // na tela de jogo o pássaro vai ficar se movimentando, caindo
         }
     }
 }
@@ -220,9 +343,9 @@ const loop = ()=>{// função que vai ser chamada toda hora, em loop
     frames ++ // I: O let frames a cada quadro, proveniente do loop, aumenta +1 em seu valor.
     requestAnimationFrame(loop) // função que vai ativar o fps, quadros por segundo, que precisa chamar a função loop toda hora, ou seja, desenhar e atualizar toda hora. Como a requestAnimationFrame junto com a drawImage dó funciona com esse esquema de laço, não dá pra trocar por algo mais funcional.
 }
-canvas.addEventListener('click', ()=>{ // observa os eventos na janela
+canvas.addEventListener('click', ()=>{ // I: Verifica se houve um clique no canvas (tela do jogo, basicamente)
     if(telaAtiva.click){ 
-        telaAtiva.click() // se a página detectar um click, vai disparar a função click(), em telas.inicio
+        telaAtiva.click() // I: Caso verdadeiro, ou seja quando a tela receber um clique, vai disparar a função click(), em telas.inicio, trocando para telas.jogo.
     }
 })
 mudaParaTela(telas.inicio) // executa a função mudaParaTela com o inicio já como argumento, ou seja, já deixa configurado para a primeira tela a aparecer
