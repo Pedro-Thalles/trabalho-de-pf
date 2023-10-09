@@ -515,7 +515,7 @@ const criarElemento = ({
   };
   const telas = {
     inicio: {
-      desenha: desenharTelaInicio,
+      desenha: desenharTelaInicio(),
       click: () => mudarParaTela(telas.jogo),
       atualiza: () => globais.chao.atualiza(),
     },
