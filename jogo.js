@@ -98,7 +98,7 @@ const fazColisao=(passaro, chao)=>{
 
 const passaro = Object.freeze({ // congela a lista
     X: 0, Y: 0,largura:33,altura:24, x: 10,y: 50,
-    velocidade: 0, /gravidade: 0.12,/ 
+    velocidade: 0, pulo:3.5, 
     pula(pulo=3.5){
         Cpassaro.velocidade = -pulo
         somPulo.play()
@@ -391,3 +391,7 @@ const loop = ()=>{
     requestAnimationFrame(loop)
 }
 loop()
+
+window.addEventListener('click', ()=>{
+    telas.jogo.click()
+})
