@@ -21,6 +21,8 @@ gasteu tempo além do que planejava pra esse trabalho.
  * @param spriteX string value to be considered when searching for the extract
  * @returns retorna a função responsavel por desenhar
  */
+
+/*
 const criarElemento = ({
   sprites,
   contexto,
@@ -352,6 +354,7 @@ const criarPlacar = ({ contexto, canvas, frames }) => {
 /** **** FIM CRIAÇÂO DE ELEMENTOS ***** */
 
 /** **** PARTE REFATORADA ***** */
+/*
 const canvas = document.querySelector('canvas');
 const contexto = canvas.getContext('2d');
 
@@ -660,4 +663,72 @@ const cicloDeJogo = () => {
 
 mudarParaTela(telas.inicio);
 cicloDeJogo();
+*/
+const imagens = new Image()
+imagens.src = './sprites.png'
+const canvas = document.querySelector('canvas')
+const contexto = canvas.getContext('2d')
 
+const fundo = {
+    X:395,Y:0, largura:271, altura:204, x:0, y:canvas.height - 204,
+    desenha(X,Y,larg,alt,x,y){ // argumentos no desenha
+        contexto.fillStyle = '#70c5ce'
+        contexto.fillRect(0,0,canvas.width,canvas.height)
+        contexto.drawImage(
+            imagens,X, Y,larg, alt,x, y,larg, alt   
+        )
+        contexto.drawImage(
+            imagens,X, Y,larg, alt,x+larg, y,larg, alt
+        )
+    }
+}
+
+
+const chao = Object.freeze({
+    X:0,Y:610, largura:224, altura:112, x:0, y:canvas.height - 100, 
+    desenha(X,Y,larg,alt,x,y){ // argumentos no desenha
+        contexto.drawImage(
+            imagens,X, Y,larg, alt,x, y, larg, alt                                           
+        )
+        contexto.drawImage(
+            imagens,X, Y,larg, alt,x + larg, y,larg, alt                                            
+        )
+    }
+})
+
+
+const passaro = Object.freeze({ // congela a lista
+    X: 0, Y: 0,largura:33,altura:24, x: 10,y: 50,   
+    desenha(X,Y,larg,alt,x,y){ // argumentos no desenha
+        contexto.drawImage(
+            imagens, X, Y,larg, alt, x, y,larg, alt   
+        )
+    }
+})
+
+
+const Cchao = {...chao}
+const Cpassaro = {...passaro} // cópia da lista congelada
+
+const loop = ()=>{
+    fundo.desenha(
+        fundo.X,fundo.Y,
+        fundo.largura,fundo.altura,
+        fundo.x, fundo.y
+    )
+    Cchao.desenha(
+        Cchao.X, Cchao.Y,
+        Cchao.largura, Cchao.altura,
+        Cchao.x, Cchao.y
+    )
+    Cpassaro.desenha(//argumentos referenciando a cópia
+        Cpassaro.X, Cpassaro.Y,
+        Cpassaro.largura, Cpassaro.altura,
+        Cpassaro.x, Cpassaro.y
+    )
+    requestAnimationFrame(loop)
+}
+loop()
+
+console.log(passaro)
+console.log(Cpassaro)
