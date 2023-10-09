@@ -1,10 +1,10 @@
-body {
+body {/*configura o corpo da página. permite que quem está dentro dele fique no centro da página*/
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
   }
-  canvas {
+  canvas { /*configura o canvas. Coloca uma bordinha em volta e deixa ele no centro da página*/
     border: 1px solid #000;
     display: block;
     margin: 0 auto;
